@@ -16,8 +16,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "antd-mobile": "^5.36.0",
+    "@arco-design/web-react": "^2.66.1",
+    "antd-mobile": "^5.39.0",
     "autoprefixer": "^10.4.19",
+    "dayjs": "^1.11.13",
     "i18next": "^23.11.4",
     "jwt-decode": "^4.0.0",
     "postcss": "^8.4.38",
