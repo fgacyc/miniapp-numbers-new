@@ -1,8 +1,10 @@
 import {useNavigate} from "react-router-dom";
 import NavBar from "@/components/nav-bar.jsx";
 import Block from "@/components/block.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {DatePicker, Select, TimePicker,Input} from "@arco-design/web-react";
+import {getAllEventTypes} from "@/api/event_type.js";
+import {useQuery} from "@tanstack/react-query";
 
 const TextArea = Input.TextArea;
 
@@ -27,11 +29,22 @@ const options = [
 export default function Event() {
     const navigate = useNavigate();
 
-    // Event Type
-    // Event Date
-    // Start Time
-    // End Time
-    // Remark
+    const {data, isLoading, isError, refetch} = useQuery({
+        queryKey: ["/getAllEventTypes"],
+        queryFn: getAllEventTypes
+    });
+    const [EventTypes, setEventTypes] = useState([]);
+
+    useEffect(() => {
+        if (isLoading) return;
+        if (isError)  return;
+        // console.log(data)
+        if (data.status) {
+            setEventTypes(data.data);
+        } else {
+            console.log("Error fetching event types");
+        }
+    }, [data]);
 
     const [eventType, setEventType] = useState("");
     const [eventDate, setEventDate] = useState("");
@@ -56,9 +69,9 @@ export default function Event() {
                     }
                     }
                 >
-                    {options.map((option, index) => (
-                        <Option key={index} value={option.value}>
-                            {option.label}
+                    {EventTypes.map((option, index) => (
+                        <Option key={index} value={option.name}>
+                            {option.name}
                         </Option>
                     ))}
                 </Select>
