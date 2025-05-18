@@ -1,4 +1,4 @@
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import NavBar from "@/components/nav-bar.jsx";
 import Block from "@/components/block.jsx";
 import {useEffect, useState} from "react";
@@ -31,12 +31,13 @@ const options = [
 
 export default function Event() {
     const navigate = useNavigate();
+    const {connect_group_id} = useParams();
 
     const {data, isLoading, isError, refetch} = useQuery({
         queryKey: ["/getAllEventTypes"],
         queryFn: getAllEventTypes
     });
-    const [EventTypes, setEventTypes] = useState([]);
+    const [EventTypes, setEventTypes] = useState(null);
 
     useEffect(() => {
         if (isLoading) return;
@@ -77,7 +78,8 @@ export default function Event() {
             "type":  eventType,
             "start_at":    event_date + "T" + startTime + "+08:00",
             "end_at":   event_date + "T" + endTime +"+08:00",
-            "expected_attendees": 0
+            "expected_attendees": 0,
+            "connect_group_id": connect_group_id,
         }
         console.log(eventData)
 
@@ -109,7 +111,7 @@ export default function Event() {
                     }
                     }
                 >
-                    {EventTypes.map((option, index) => (
+                    {EventTypes && EventTypes.map((option, index) => (
                         <Option key={index} value={option.name}>
                             {option.name}
                         </Option>

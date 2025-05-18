@@ -17,9 +17,9 @@ export default function MainRoutes(){
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
 
-            <Route path="/event" element={<Event />} />
+            <Route path="/event/:connect_group_id" element={<Event />} />
             <Route path="/attendance" element={<Attendance />} />
-            <Route path="/attendance/:eventID" element={<Attendance />} />
+            <Route path="/attendance/:eventID/:session_id" element={<Attendance />} />
         </Routes>
     )
 }

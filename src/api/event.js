@@ -30,9 +30,9 @@ export async function getEventWithSession(eventId) {
     return response.json();
 }
 
-// 获取所有 Event 和 Session
-export async function getAllEventsWithSessions() {
-    const response = await fetch(`${host_url}/event/event_with_session`, {
+// 获取所有 Event 和 Session 使用 connect_group_id
+export async function getAllEventsWithSessionsWithCGID(connect_group_id) {
+    const response = await fetch(`${host_url}/event/event_with_session/connect_group_id/${connect_group_id}`, {
         method: "GET",
     });
 
@@ -45,7 +45,7 @@ export async function getAllEventsWithSessions() {
 
 // 根据 Event ID 获取所有 event 和 Session
 export async function getAllEventsWithSessionsByEventId(eventId) {
-    const response = await fetch(`${host_url}/event/event_with_session/${encodeURIComponent(eventId)}`, {
+    const response = await fetch(`${host_url}/event/event_with_session/event/${encodeURIComponent(eventId)}`, {
         method: "GET",
     });
 
