@@ -19,6 +19,7 @@ export default function MainRoutes(){
 
             <Route path="/event" element={<Event />} />
             <Route path="/attendance" element={<Attendance />} />
+            <Route path="/attendance/:eventID" element={<Attendance />} />
         </Routes>
     )
 }

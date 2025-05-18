@@ -5,6 +5,9 @@ import {useEffect, useState} from "react";
 import {DatePicker, Select, TimePicker,Input} from "@arco-design/web-react";
 import {getAllEventTypes} from "@/api/event_type.js";
 import {useQuery} from "@tanstack/react-query";
+import dayjs from "dayjs";
+import {createEventWithSession} from "@/api/event.js";
+import {Toast} from "antd-mobile";
 
 const TextArea = Input.TextArea;
 
@@ -46,16 +49,53 @@ export default function Event() {
         }
     }, [data]);
 
+    const time = dayjs(new Date()).format("HH:mm:ss");
+
     const [eventType, setEventType] = useState("");
-    const [eventDate, setEventDate] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
+    const [eventDate, setEventDate] = useState(new Date());
+    const [startTime, setStartTime] = useState(time);
+    const [endTime, setEndTime] = useState(time);
     const [remark, setRemark] = useState("");
 
     // const [eventTypeVisible, setEventTypeVisible] = useState(false);
     // const [visible1, setVisible1] = useState(false)
-    // const today = dayjs()
+    const today = dayjs()
     // const singleDate = new Date(today.year(), today.month(), today.date())
+
+    async function handleSubmit() {
+        if (!eventType || !eventDate || !startTime || !endTime) {
+            alert("Please fill in all fields");
+            return;
+        }
+
+        // yyyy-mm-dd
+        const event_date =  dayjs(eventDate).format("YYYY-MM-DD");
+
+        const eventData = {
+            "name":   eventType,
+            "description":  remark,
+            "type":  eventType,
+            "start_at":    event_date + "T" + startTime + "+08:00",
+            "end_at":   event_date + "T" + endTime +"+08:00",
+            "expected_attendees": 0
+        }
+        console.log(eventData)
+
+        const res = await  createEventWithSession(eventData)
+        if (res.status) {
+            console.log(res)
+            Toast.show({
+                content: 'Event created successfully',
+                afterClose: () => {
+                    navigate("/")
+                },
+            })
+            // navigate("/");
+        }
+        else {
+            console.log("Error creating event");
+        }
+    }
 
     return (
         <div>
@@ -81,7 +121,7 @@ export default function Event() {
                 <DatePicker
                     defaultValue={new Date()}
                     onSelect={(value) => {
-                        console.log(value)
+                        // console.log(value)
                         setEventDate(value)
                     }}
                 />
@@ -91,7 +131,7 @@ export default function Event() {
                 <TimePicker
                     defaultValue={new Date()}
                     onSelect={(value) => {
-                        console.log(value)
+                        // console.log(value)
                         setStartTime(value)
                     }}
                 />
@@ -101,7 +141,7 @@ export default function Event() {
                 <TimePicker
                     defaultValue={new Date()}
                     onSelect={(value) => {
-                        console.log(value)
+                        // console.log(value)
                         setEndTime(value)
                     }}
                 />
@@ -113,7 +153,7 @@ export default function Event() {
                     placeholder="Add a remark"
                     value={remark}
                     onChange={(value) => {
-                        console.log(value)
+                        // console.log(value)
                         setRemark(value)
                     }}
                 />
@@ -121,13 +161,7 @@ export default function Event() {
 
             {/* button on the foot   */}
             <div className={"flex justify-center items-center mt-4"}>
-                <button className={"bg-blue-500 text-white px-4 py-2 rounded"} onClick={() => {
-                    console.log("Event Type: ", eventType);
-                    console.log("Event Date: ", eventDate);
-                    console.log("Start Time: ", startTime);
-                    console.log("End Time: ", endTime);
-                    console.log("Remark: ", remark);
-                }}>
+                <button className={"bg-blue-500 text-white px-4 py-2 rounded"} onClick={handleSubmit}>
                     Submit
                 </button>
             </div>
