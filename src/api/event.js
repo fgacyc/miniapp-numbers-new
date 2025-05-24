@@ -19,7 +19,7 @@ export async function createEventWithSession(data) {
 
 // 获取单个 Event 和 Session
 export async function getEventWithSession(eventId) {
-    const response = await fetch(`${host_url}/event/event_with_session/${encodeURIComponent(eventId)}`, {
+    const response = await fetch(`${host_url}/event/event_with_session/event/${encodeURIComponent(eventId)}`, {
         method: "GET",
     });
 
@@ -44,6 +44,7 @@ export async function getAllEventsWithSessionsWithCGID(connect_group_id) {
 }
 
 // 根据 Event ID 获取所有 event 和 Session
+// 因为 attendance提交的是 session_id,而不是 event_id, 所以这里需要根据eventId 把event 和 session都查出来
 export async function getAllEventsWithSessionsByEventId(eventId) {
     const response = await fetch(`${host_url}/event/event_with_session/event/${encodeURIComponent(eventId)}`, {
         method: "GET",

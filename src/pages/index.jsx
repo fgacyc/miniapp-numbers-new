@@ -52,7 +52,7 @@ export default function Index() {
             text: 'Edit Event',
             key: 'edit',
             onClick: () => {
-                navigate(`/event/${currentEvent.event.id}`)
+                navigate(`/event/${connect_group_id}/${currentEvent.event.id}`)
             }
         },
     ]

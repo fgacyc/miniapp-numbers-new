@@ -1,0 +1,21 @@
+import {useNavigate, useParams} from "react-router-dom";
+import NavBar from "@/components/nav-bar.jsx";
+import CGEditCard from "@/pages/attendance/CGEditCard.jsx";
+import CGMemberCard from "@/pages/attendance/CGMemberCard.jsx";
+
+export default function Attendance() {
+    const navigate = useNavigate();
+    const {eventID,session_id} = useParams();
+    const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
+
+    return (
+        <div>
+            <NavBar ifShowBackArrow={true}>Attendance</NavBar>
+            <CGEditCard eventID={eventID}/>
+            <CGMemberCard
+                connect_group_id={connect_group_id}
+                session_id={session_id}
+            />
+        </div>
+    )
+}

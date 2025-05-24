@@ -1,56 +1,6 @@
-import {useNavigate, useParams} from "react-router-dom";
-import NavBar from "@/components/nav-bar.jsx";
-import {getAllEventsWithSessionsByEventId} from "@/api/event.js";
 import {useQuery} from "@tanstack/react-query";
-import {useEffect, useState} from "react";
-import {IconCalendar} from "@arco-design/web-react/icon";
 import {getAllUsers} from "@/api/user.js";
-import { Input  } from '@arco-design/web-react';
-
-
-function CGEditCard({eventID}) {
-    const {data, isLoading, isError} = useQuery({
-        queryKey: ["/getAllEventTypes"],
-        queryFn: () => getAllEventsWithSessionsByEventId(eventID)
-    });
-
-    const [currentEvent, setCurrentEvent] = useState(null);
-
-    useEffect(() => {
-        if (isLoading) return;
-        if (isError) return;
-        // console.log(data)
-        if (data.status) {
-            setCurrentEvent(data.data);
-        } else {
-            console.log("Error fetching event types");
-        }
-    }, [data]);
-
-    return (
-        <div>
-            {
-                currentEvent && <div
-                    className={"flex flex-row items-center justify-between bg-white mb-2 w-full rounded-sm shadow-md p-4 relative mt-4"}
-                >
-                    <div>
-                        <div className={"flex items-center gap-2"}>
-                            <IconCalendar/>
-                            <div className={"text-black font-bold"}>{currentEvent.event.name}</div>
-                        </div>
-                        <div className={"text-gray-500"}>{currentEvent.session.startAt}</div>
-                        <div className={"text-gray-500"}>{currentEvent.session.endAt}</div>
-                    </div>
-
-                    <div className={""}>
-                        Edit
-                    </div>
-
-                </div>
-            }
-        </div>
-    )
-}
+import {useEffect, useState} from "react";
 
 function StatusRadioGroup({ name, checkedValue, onChange }) {
     return (
@@ -101,7 +51,7 @@ function StatusRadioGroup({ name, checkedValue, onChange }) {
 }
 
 
-function CGMemberCard({ connect_group_id, session_id }) {
+ export default function CGMemberCard({ connect_group_id, session_id }) {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["/getAllUsers"],
         queryFn: () => getAllUsers(connect_group_id),
@@ -135,6 +85,10 @@ function CGMemberCard({ connect_group_id, session_id }) {
         });
     };
 
+    useEffect(() => {
+        console.log(CGMemberListWithSession);
+    }, [CGMemberListWithSession]);
+
     return (
         <div>
             {CGMemberListWithSession.map((member, index) => (
@@ -161,39 +115,19 @@ function CGMemberCard({ connect_group_id, session_id }) {
                                     onChange={(value) => handleStatusChange(index, value)}
                                 />
                             </div>
-                            <Input
-                                placeholder="Reason"
-                                value={member.reason}
-                                onChange={(value) => {
-                                    const newList = [...CGMemberListWithSession];
-                                    newList[index].reason = value;
-                                    setCGMemberListWithSession(newList);
-                                }}
-                            />
+                            {/*<Input*/}
+                            {/*    placeholder="Reason"*/}
+                            {/*    value={member.reason}*/}
+                            {/*    onChange={(value) => {*/}
+                            {/*        const newList = [...CGMemberListWithSession];*/}
+                            {/*        newList[index].reason = value;*/}
+                            {/*        setCGMemberListWithSession(newList);*/}
+                            {/*    }}*/}
+                            {/*/>*/}
                         </div>
                     </div>
                 </div>
             ))}
         </div>
     );
-}
-
-
-export default function Attendance() {
-    const navigate = useNavigate();
-    const {eventID,session_id} = useParams();
-
-    const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
-
-
-    return (
-        <div>
-            <NavBar ifShowBackArrow={true}>Attendance</NavBar>
-            <CGEditCard eventID={eventID}/>
-            <CGMemberCard
-                connect_group_id={connect_group_id}
-                session_id={session_id}
-            />
-        </div>
-    )
 }

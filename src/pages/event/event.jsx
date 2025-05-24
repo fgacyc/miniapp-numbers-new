@@ -1,0 +1,156 @@
+import { useNavigate, useParams } from "react-router-dom";
+import NavBar from "@/components/nav-bar.jsx";
+import Block from "@/components/block.jsx";
+import { useEffect, useState } from "react";
+import { DatePicker, Select, TimePicker, Input } from "@arco-design/web-react";
+import { getAllEventTypes } from "@/api/event_type.js";
+import {
+    getEventWithSession,
+    createEventWithSession,
+    updateEventWithSession
+} from "@/api/event.js";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { Toast } from "antd-mobile";
+
+const TextArea = Input.TextArea;
+const Option = Select.Option;
+
+export default function Event() {
+    const navigate = useNavigate();
+    const { connect_group_id, event_id } = useParams();
+    const isEditMode = !!event_id;
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["/getAllEventTypes"],
+        queryFn: getAllEventTypes
+    });
+
+    const [EventTypes, setEventTypes] = useState(null);
+    const [eventType, setEventType] = useState("");
+    const [eventDate, setEventDate] = useState(new Date());
+    const [startTime, setStartTime] = useState(dayjs(new Date()).format("HH:mm:ss"));
+    const [endTime, setEndTime] = useState(dayjs(new Date()).format("HH:mm:ss"));
+    const [remark, setRemark] = useState("");
+
+    // Load event types
+    useEffect(() => {
+        if (isLoading || isError) return;
+        if (data.status) {
+            setEventTypes(data.data);
+        } else {
+            console.log("Error fetching event types");
+        }
+    }, [data]);
+
+    // Load existing event if editing
+    useEffect(() => {
+        if (!isEditMode) return;
+
+        async function fetchEventData() {
+            const res = await getEventWithSession(event_id);
+            if (res.status) {
+                const e = res.data.event;
+                const s = res.data.session;
+                console.log(s);
+                setEventType(e.type);
+                setRemark(e.description);
+                setEventDate(dayjs(s.startAt).toDate());
+                setStartTime(dayjs(s.startAt).format("HH:mm:ss"));
+                setEndTime(dayjs(s.endAt).format("HH:mm:ss"));
+            } else {
+                Toast.show({ content: 'Failed to load event data' });
+            }
+        }
+
+        fetchEventData();
+    }, [isEditMode, event_id]);
+
+    async function handleSubmit() {
+        if (!eventType || !eventDate || !startTime || !endTime) {
+            alert("Please fill in all fields");
+            return;
+        }
+
+        const event_date = dayjs(eventDate).format("YYYY-MM-DD");
+        const eventData = {
+            name: eventType,
+            description: remark,
+            type: eventType,
+            start_at: `${event_date}T${startTime}+08:00`,
+            end_at: `${event_date}T${endTime}+08:00`,
+            expected_attendees: 0,
+            connect_group_id: connect_group_id,
+        };
+
+        const res = isEditMode
+            ? await updateEventWithSession(event_id, eventData)
+            : await createEventWithSession(eventData);
+
+        if (res.status) {
+            Toast.show({
+                content: isEditMode ? 'Event updated successfully' : 'Event created successfully',
+                afterClose: () => navigate("/")
+            });
+        } else {
+            Toast.show({ content: "Operation failed" });
+        }
+    }
+
+    return (
+        <div>
+            <NavBar ifShowBackArrow={true}>
+                {isEditMode ? "Edit Event" : "Add Event"}
+            </NavBar>
+
+            <Block title={"Event Type"} className={"mb-2"}>
+                <Select
+                    placeholder='Please select event type'
+                    value={eventType}
+                    onChange={setEventType}
+                >
+                    {EventTypes && EventTypes.map((option, index) => (
+                        <Option key={index} value={option.name}>
+                            {option.name}
+                        </Option>
+                    ))}
+                </Select>
+            </Block>
+
+            <Block title={"Event Date"} className={"mb-2"}>
+                <DatePicker
+                    value={dayjs(eventDate).toDate()}
+                    onSelect={(value) => setEventDate(value)}
+                />
+            </Block>
+
+            <Block title={"Start Time"} className={"mb-2"}>
+                <TimePicker
+                    value={dayjs(`2023-01-01T${startTime}`)}
+                    onSelect={(value) => setStartTime(dayjs(value).format("HH:mm:ss"))}
+                />
+            </Block>
+
+            <Block title={"End Time"} className={"mb-2"}>
+                <TimePicker
+                    value={dayjs(`2023-01-01T${endTime}`)}
+                    onSelect={(value) => setEndTime(dayjs(value).format("HH:mm:ss"))}
+                />
+            </Block>
+
+            <Block title={"Remark"} className={"mb-2"}>
+                <TextArea
+                    placeholder="Add a remark"
+                    value={remark}
+                    onChange={setRemark}
+                />
+            </Block>
+
+            <div className={"flex justify-center items-center mt-4"}>
+                <button className={"bg-blue-500 text-white px-4 py-2 rounded"} onClick={handleSubmit}>
+                    Submit
+                </button>
+            </div>
+        </div>
+    );
+}
