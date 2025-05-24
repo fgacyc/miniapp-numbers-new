@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 export default function CGEditCard({connect_group_id, eventID}) {
     const  navigate = useNavigate();
     const {data, isLoading, isError} = useQuery({
-        queryKey: ["/getAllEventTypes"],
+        queryKey: ["/getAllEventsWithSessionsByEventId"],
         queryFn: () => getAllEventsWithSessionsByEventId(eventID)
     });
 

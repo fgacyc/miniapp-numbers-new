@@ -52,7 +52,7 @@ export default function Event() {
             if (res.status) {
                 const e = res.data.event;
                 const s = res.data.session;
-                console.log(s);
+                // console.log(s);
                 setEventType(e.type);
                 setRemark(e.description);
                 setEventDate(dayjs(s.startAt).toDate());
@@ -125,7 +125,8 @@ export default function Event() {
                     value={eventType}
                     onChange={setEventType}
                 >
-                    {EventTypes && EventTypes.map((option, index) => (
+                    {!isLoading && !isError && EventTypes &&
+                        EventTypes.map((option, index) => (
                         <Option key={index} value={option.name}>
                             {option.name}
                         </Option>

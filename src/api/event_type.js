@@ -19,7 +19,7 @@ export async function createEventType(data) {
 
 // 获取所有 EventType
 export async function getAllEventTypes() {
-    const response = await fetch(`${host_url}/event_type`, {
+    const response = await fetch(`${host_url}/event_type/event_types`, {
         method: "GET",
     });
 
