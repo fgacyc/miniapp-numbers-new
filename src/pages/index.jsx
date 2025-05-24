@@ -10,6 +10,8 @@ import {useQuery} from "@tanstack/react-query";
 // import {getAllEventTypes} from "@/api/event_type.js";
 import { getAllEventsWithSessionsWithCGID} from "@/api/event.js";
 import {IconRight} from "@arco-design/web-react/icon";
+import CgCard from "@/components/cg-card.jsx";
+import AttendRate from "@/components/attend-rate.jsx";
 
 
 
@@ -64,8 +66,12 @@ export default function Index() {
     return (
         <div className={"h-screen flex flex-col justify-center items-center"}>
             <ProfileToken/>
-            <div className={"h-screen w-full flex flex-col justify-start items-center"}>
-                <div className={"h-[60px]"}></div>
+            <div className={"h-screen w-full flex flex-col justify-start items-center p-4"}>
+                <div className={"h-[40px]"}></div>
+                <CgCard connect_group_id={connect_group_id} />
+                <AttendRate rateData={"75%"} />
+
+
                 <Button onClick={() => {
                     navigate(`/event/${connect_group_id}`)
                 }}
@@ -87,7 +93,6 @@ export default function Index() {
                                 <div className={"text-gray-500"}>{event.session.startAt}</div>
                                 <div className={"text-gray-500"}>{event.session.endAt}</div>
 
-                                {/*  在右侧添加一个图标，位置绝对定位 ，在右侧的中间位置 */}
                                 <div className={"absolute   top-1/2 right-4 transform -translate-y-1/2 cursor-pointer"} >
                                     <IconRight />
                                 </div>
