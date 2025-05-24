@@ -7,7 +7,7 @@ import { getAllEventTypes } from "@/api/event_type.js";
 import {
     getEventWithSession,
     createEventWithSession,
-    updateEventWithSession
+    updateEventWithSession, deleteEventWithSession
 } from "@/api/event.js";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -97,6 +97,20 @@ export default function Event() {
         }
     }
 
+    async function handleDelete() {
+        if (!isEditMode) return;
+        if (!confirm("Are you sure you want to delete this event?")) return;
+        const res =await deleteEventWithSession(event_id);
+        if (res.status) {
+            Toast.show({
+                content: 'Event deleted successfully',
+                afterClose: () => navigate("/")
+            });
+        } else {
+            Toast.show({ content: "Failed to delete event" });
+        }
+    }
+
     return (
         <div>
             <NavBar ifShowBackArrow={true}>
@@ -150,6 +164,14 @@ export default function Event() {
                 <button className={"bg-blue-500 text-white px-4 py-2 rounded"} onClick={handleSubmit}>
                     Submit
                 </button>
+
+                {
+                    isEditMode && (
+                        <button className={"bg-red-500 text-white px-4 py-2 rounded ml-2"} onClick={handleDelete}>
+                            Delete
+                        </button>
+                    )
+                }
             </div>
         </div>
     );
