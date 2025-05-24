@@ -12,6 +12,8 @@ import { getAllEventsWithSessionsWithCGID} from "@/api/event.js";
 import {IconRight} from "@arco-design/web-react/icon";
 import CgCard from "@/components/cg-card.jsx";
 import AttendRate from "@/components/attend-rate.jsx";
+import AttendBarChart from "@/components/attend-bar-chart.jsx";
+import EventCard from "@/components/event-card.jsx";
 
 
 
@@ -70,33 +72,22 @@ export default function Index() {
                 <div className={"h-[40px]"}></div>
                 <CgCard connect_group_id={connect_group_id} />
                 <AttendRate rateData={"75%"} />
+                <AttendBarChart attendData={[]}/>
 
+                <div className={"flex flex-row items-center justify-between w-full mt-4 mb-2"}>
+                    <div className={"text-lg font-semibold"}>CG Events</div>
+                    <Button onClick={() => {navigate(`/event/${connect_group_id}`)}}
+                            className={"bg-white text-black text-base rounded-full border border-black  w-[121px] h-[32px] flex justify-center items-center"}
+                    >
+                        Add Event
+                    </Button>
+                </div>
 
-                <Button onClick={() => {
-                    navigate(`/event/${connect_group_id}`)
-                }}
-                        className={"bg-white text-black rounded-full border border-black  w-[200px] h-[50px] flex justify-center items-center"}
-                >
-                    Add Event
-                </Button>
 
                 {
                     eventList.map((event, index) => {
                         return (
-                            <div key={index} className={"flex flex-col items-center bg-white mb-2 w-full rounded-sm shadow-md p-4 relative"}
-                                    onClick={() => {
-                                        setCurrentEvent(event)
-                                        setActionSheetVisible(true)
-                                    }}
-                            >
-                                <div className={"text-gray-500"}>{event.event.name}</div>
-                                <div className={"text-gray-500"}>{event.session.startAt}</div>
-                                <div className={"text-gray-500"}>{event.session.endAt}</div>
-
-                                <div className={"absolute   top-1/2 right-4 transform -translate-y-1/2 cursor-pointer"} >
-                                    <IconRight />
-                                </div>
-                            </div>
+                            <EventCard event={event} setCurrentEvent={setCurrentEvent} setActionSheetVisible={setActionSheetVisible} key={index}/>
                         )
                     })
                 }

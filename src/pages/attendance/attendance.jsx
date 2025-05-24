@@ -9,16 +9,19 @@ export default function Attendance() {
     const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
 
     return (
-        <div>
+        <div className={""}>
             <NavBar ifShowBackArrow={true}>Attendance</NavBar>
-            <CGEditCard
-                connect_group_id={connect_group_id}
-                eventID={eventID}
-            />
-            <CGMemberCard
-                connect_group_id={connect_group_id}
-                session_id={session_id}
-            />
+            <div className={"p-4"}>
+                <CGEditCard
+                    connect_group_id={connect_group_id}
+                    eventID={eventID}
+                />
+                <CGMemberCard
+                    connect_group_id={connect_group_id}
+                    session_id={session_id}
+                />
+            </div>
+
         </div>
     )
 }

@@ -61,6 +61,7 @@ export default function CGMemberCard({ connect_group_id, session_id }) {
 
     const [CGMemberListWithSession, setCGMemberListWithSession] = useState([]);
     const [attendanceMap, setAttendanceMap] = useState({}); // userId -> attendance object
+    const [abbentCount, setAbsentCount] = useState(0);
 
     useEffect(() => {
         if (!userData || isLoading || isError || !userData.status) return;
@@ -146,11 +147,31 @@ export default function CGMemberCard({ connect_group_id, session_id }) {
     }
 
     return (
-        <div>
+        <div >
+            <div className={"flex flex-row items-center justify-between w-full mb-3"}>
+                <div className={"bg-white shadow rounded p-3 w-1/2 mr-2"}>
+                    <div className={"text-gray-400"}>No. of Members</div>
+                    <div className={"font-semibold"}>{CGMemberListWithSession && CGMemberListWithSession.length}</div>
+                </div>
+                <div className={"bg-white shadow rounded p-3 w-1/2 ml-2"}>
+                    <div className={"text-gray-400"}>No. of Absent</div>
+                    <div className={"font-semibold"}>
+                        {CGMemberListWithSession.filter((member) => member.status === false).length}
+                    </div>
+                </div>
+            </div>
+
+            <div className={"flex flex-row items-center justify-between w-full bg-black text-gray-200 p-1 text-xs"}>
+                <div className="ml-3">Member</div>
+                <div className={"flex"}>
+                    <div className={"mr-2"}>Present</div>
+                    <div>Absent</div>
+                </div>
+            </div>
             {CGMemberListWithSession.map((member, index) => (
                 <div
                     key={index}
-                    className="flex flex-col items-center bg-white mb-2 w-full rounded-sm shadow-md p-4 relative"
+                    className="flex flex-col items-center bg-white  w-full p-4 relative"
                 >
                     <div className="flex flex-row items-center justify-between w-full">
                         <img
@@ -163,7 +184,7 @@ export default function CGMemberCard({ connect_group_id, session_id }) {
                             <div className="flex flex-row items-start justify-between">
                                 <div>
                                     <div className="text-gray-500">{member.name}</div>
-                                    <div className="text-gray-500">{member.email}</div>
+                                    <div className="text-gray-500 truncate">{member.email}</div>
                                 </div>
                                 <StatusRadioGroup
                                     name={`status-${index}`}
