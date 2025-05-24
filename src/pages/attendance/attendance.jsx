@@ -11,7 +11,10 @@ export default function Attendance() {
     return (
         <div>
             <NavBar ifShowBackArrow={true}>Attendance</NavBar>
-            <CGEditCard eventID={eventID}/>
+            <CGEditCard
+                connect_group_id={connect_group_id}
+                eventID={eventID}
+            />
             <CGMemberCard
                 connect_group_id={connect_group_id}
                 session_id={session_id}

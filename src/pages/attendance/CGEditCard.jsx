@@ -2,8 +2,10 @@ import {useQuery} from "@tanstack/react-query";
 import {getAllEventsWithSessionsByEventId} from "@/api/event.js";
 import {useEffect, useState} from "react";
 import {IconCalendar} from "@arco-design/web-react/icon";
+import {useNavigate} from "react-router-dom";
 
-export default function CGEditCard({eventID}) {
+export default function CGEditCard({connect_group_id, eventID}) {
+    const  navigate = useNavigate();
     const {data, isLoading, isError} = useQuery({
         queryKey: ["/getAllEventTypes"],
         queryFn: () => getAllEventsWithSessionsByEventId(eventID)
@@ -22,6 +24,10 @@ export default function CGEditCard({eventID}) {
         }
     }, [data]);
 
+    function handleEdit() {
+        navigate(`/event/${connect_group_id}/${eventID}`)
+    }
+
     return (
         <div>
             {
@@ -37,7 +43,7 @@ export default function CGEditCard({eventID}) {
                         <div className={"text-gray-500"}>{currentEvent && currentEvent?.session?.endAt}</div>
                     </div>
 
-                    <div className={""}>
+                    <div className={"text-gray-500 cursor-pointer"} onClick={handleEdit}>
                         Edit
                     </div>
 
