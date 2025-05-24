@@ -77,11 +77,13 @@ export default function Event() {
             name: eventType,
             description: remark,
             type: eventType,
-            start_at: `${event_date}T${startTime}+08:00`,
-            end_at: `${event_date}T${endTime}+08:00`,
+            start_at: `${event_date}T${startTime}+00:00`,
+            end_at: `${event_date}T${endTime}+00:00`,
             expected_attendees: 0,
             connect_group_id: connect_group_id,
         };
+
+        console.log(eventData);
 
         const res = isEditMode
             ? await updateEventWithSession(event_id, eventData)
@@ -140,15 +142,18 @@ export default function Event() {
 
             <Block title={"Start Time"} className={"mb-2"}>
                 <TimePicker
-                    value={dayjs(`2023-01-01T${startTime}`)}
-                    onSelect={(value) => setStartTime(dayjs(value).format("HH:mm:ss"))}
+                    value={startTime}
+                    onSelect={(value) => {
+                        setStartTime(value)
+                        // setStartTime(value);
+                    }}
                 />
             </Block>
 
             <Block title={"End Time"} className={"mb-2"}>
                 <TimePicker
-                    value={dayjs(`2023-01-01T${endTime}`)}
-                    onSelect={(value) => setEndTime(dayjs(value).format("HH:mm:ss"))}
+                    value={endTime}
+                    onSelect={(value) => setEndTime(value)}
                 />
             </Block>
 

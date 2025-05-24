@@ -1,6 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
 import {getAllUsers} from "@/api/user.js";
 import {useEffect, useState} from "react";
+import {createAttendance, getAttendanceBySessionId, updateAttendance} from "@/api/attendance.js";
+import {Toast} from "antd-mobile";
 
 function StatusRadioGroup({ name, checkedValue, onChange }) {
     return (
@@ -51,43 +53,97 @@ function StatusRadioGroup({ name, checkedValue, onChange }) {
 }
 
 
- export default function CGMemberCard({ connect_group_id, session_id }) {
-    const { data, isLoading, isError } = useQuery({
-        queryKey: ["/getAllUsers"],
+export default function CGMemberCard({ connect_group_id, session_id }) {
+    const { data: userData, isLoading, isError } = useQuery({
+        queryKey: ["/getAllUsers", connect_group_id],
         queryFn: () => getAllUsers(connect_group_id),
     });
 
     const [CGMemberListWithSession, setCGMemberListWithSession] = useState([]);
+    const [attendanceMap, setAttendanceMap] = useState({}); // userId -> attendance object
 
     useEffect(() => {
-        if (isLoading || isError) return;
-        if (data.status) {
-            // 初始化成员状态（默认 absent）
-            const initialList = data.data.map((member) => ({
-                ...member,
-                session_id: session_id,
-                user_id: member.user_id,
-                status: false, // 默认 absent
-                reason: "",     // 可选：记录原因
-            }));
-            setCGMemberListWithSession(initialList);
-        } else {
-            console.log("Error fetching event types");
-        }
-    }, [data]);
+        if (!userData || isLoading || isError || !userData.status) return;
 
-    // 处理 status 状态更新
+        async function init() {
+            const users = userData.data;
+
+            let map = {};
+            try {
+                const res = await getAttendanceBySessionId(session_id);
+                console.log("Attendance data:", res);
+                if (res.status) {
+                    res.data.forEach((a) => {
+                        map[a.userId] = a;
+                    });
+                    setAttendanceMap(map);
+                }
+            } catch (err) {
+                console.error("Error fetching attendance:", err);
+            }
+
+            const list = users.map((user) => ({
+                ...user,
+                user_id: user.id,
+                session_id,
+                status: map[user.id]?.status ?? false,
+                reason: map[user.id]?.description ?? "",
+            }));
+
+            setCGMemberListWithSession(list);
+        }
+
+        init();
+    }, [userData]);
+
     const handleStatusChange = (index, value) => {
         setCGMemberListWithSession((prev) => {
             const newList = [...prev];
-            newList[index].status = value === "green"; // green = present, red = absent
+            newList[index].status = value === "green";
             return newList;
         });
     };
 
-    useEffect(() => {
-        console.log(CGMemberListWithSession);
-    }, [CGMemberListWithSession]);
+    // const handleReasonChange = (index, value) => {
+    //     setCGMemberListWithSession((prev) => {
+    //         const newList = [...prev];
+    //         newList[index].reason = value;
+    //         return newList;
+    //     });
+    // };
+
+    async function handleSubmit() {
+        const tasks = CGMemberListWithSession.map((member) => {
+            const data = {
+                status: member.status,
+                description: member.reason,
+            };
+
+
+            if (attendanceMap[member.user_id]) {
+                return updateAttendance(session_id, member.user_id, data);
+            } else {
+                return createAttendance({
+                    session_id,
+                    user_id: member.user_id,
+                    ...data,
+                });
+            }
+        });
+
+
+
+        try {
+            await Promise.all(tasks);
+            Toast.show({
+                content: "Attendance submitted successfully",
+            });
+        } catch (err) {
+            Toast.show({
+                content: "Attendance submission failed",
+            });
+        }
+    }
 
     return (
         <div>
@@ -110,7 +166,7 @@ function StatusRadioGroup({ name, checkedValue, onChange }) {
                                     <div className="text-gray-500">{member.email}</div>
                                 </div>
                                 <StatusRadioGroup
-                                    name={`status-${index}`}  // 独立 name 避免冲突
+                                    name={`status-${index}`}
                                     checkedValue={member.status}
                                     onChange={(value) => handleStatusChange(index, value)}
                                 />
@@ -118,16 +174,21 @@ function StatusRadioGroup({ name, checkedValue, onChange }) {
                             {/*<Input*/}
                             {/*    placeholder="Reason"*/}
                             {/*    value={member.reason}*/}
-                            {/*    onChange={(value) => {*/}
-                            {/*        const newList = [...CGMemberListWithSession];*/}
-                            {/*        newList[index].reason = value;*/}
-                            {/*        setCGMemberListWithSession(newList);*/}
-                            {/*    }}*/}
+                            {/*    onChange={(val) => handleReasonChange(index, val)}*/}
                             {/*/>*/}
                         </div>
                     </div>
                 </div>
             ))}
+
+            <div className="flex justify-center items-center mt-4">
+                <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                    onClick={handleSubmit}
+                >
+                    Submit
+                </button>
+            </div>
         </div>
     );
 }
