@@ -1,4 +1,4 @@
-const host_url = "http://127.0.0.1:5000"; // 替换为你的后端地址
+const host_url = import.meta.env.VITE_HOST_URL;
 
 // 创建 EventType
 export async function createEventType(data) {

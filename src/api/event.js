@@ -1,4 +1,4 @@
-const host_url = "http://127.0.0.1:5000";
+const host_url = import.meta.env.VITE_HOST_URL;
 
 // 创建 Event 和 Session
 export async function createEventWithSession(data) {
