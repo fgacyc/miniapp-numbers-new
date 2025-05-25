@@ -66,7 +66,7 @@ export default function Index() {
 
     return (
         <div className={"h-screen flex flex-col justify-center items-center"}>
-            <ProfileToken/>
+            {/*<ProfileToken/>*/}
             <div className={"h-screen w-full flex flex-col justify-start items-center p-4 overflow-y-auto pt-12"}>
                 <CgCard connect_group_id={connect_group_id}/>
                 <AttendRate connect_group_id={connect_group_id}/>
