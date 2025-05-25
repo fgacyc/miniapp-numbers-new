@@ -68,8 +68,7 @@ export default function Index() {
     return (
         <div className={"h-screen flex flex-col justify-center items-center"}>
             <ProfileToken/>
-            <div className={"h-screen w-full flex flex-col justify-start items-center p-4"}>
-                <div className={"h-[40px]"}></div>
+            <div className={"h-screen w-full flex flex-col justify-start items-center p-4 overflow-y-auto pt-12"}>
                 <CgCard connect_group_id={connect_group_id} />
                 <AttendRate rateData={"75%"} />
                 <AttendBarChart attendData={[]}/>
@@ -98,24 +97,8 @@ export default function Index() {
                     onClose={() => setActionSheetVisible(false)}
                 />
 
-
-
-
-                {/*<div className={"mt-20 text-gray-500"}>*/}
-                {/*    {dayjs(dateSelected).format('YYYY-MM-DD')}*/}
-                {/*</div>*/}
-
-                {/*<DatePicker*/}
-                {/*    triggerElement={null}*/}
-                {/*    style={{ width: 268 }}*/}
-                {/*    value={singleDate}*/}
-                {/*    onChange={(v) => setDateSelected(v)}*/}
-                {/*    pickerValue={singleDate}*/}
-                {/*    onPickerValueChange={(v) => setDateSelected(v)}*/}
-                {/*/>*/}
             </div>
 
-        {/*https://mobile.ant.design/zh/components/action-sheet*/}
         </div>
     )
 }

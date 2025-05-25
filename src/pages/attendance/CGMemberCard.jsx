@@ -53,7 +53,36 @@ function StatusRadioGroup({ name, checkedValue, onChange }) {
 }
 
 
-export default function CGMemberCard({ connect_group_id, session_id }) {
+function CGMemberCard({ member, index, handleStatusChange }) {
+    return (
+        <div className="flex flex-col items-center bg-white w-full p-4 relative">
+            <div className="flex flex-row items-center justify-between w-full">
+                <img
+                    src={member.avatar_url}
+                    referrerPolicy="no-referrer"
+                    alt="avatar"
+                    className="w-[50px] h-[50px] rounded-full mr-4"
+                />
+                <div className="w-full">
+                    <div className="flex flex-row items-start justify-between">
+                        <div>
+                            <div className="text-gray-500">{member.name}</div>
+                            <div className="text-gray-500 truncate">{member.email}</div>
+                        </div>
+                        <StatusRadioGroup
+                            name={`status-${index}`}
+                            checkedValue={member.status}
+                            onChange={(value) => handleStatusChange(index, value)}
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+export default function CGMemberSection({ connect_group_id, session_id }) {
     const { data: userData, isLoading, isError } = useQuery({
         queryKey: ["/getAllUsers", connect_group_id],
         queryFn: () => getAllUsers(connect_group_id),
@@ -169,47 +198,16 @@ export default function CGMemberCard({ connect_group_id, session_id }) {
                 </div>
             </div>
             {CGMemberListWithSession.map((member, index) => (
-                <div
-                    key={index}
-                    className="flex flex-col items-center bg-white  w-full p-4 relative"
-                >
-                    <div className="flex flex-row items-center justify-between w-full">
-                        <img
-                            src={member.avatar_url}
-                            referrerPolicy="no-referrer"
-                            alt="avatar"
-                            className="w-[50px] h-[50px] rounded-full mr-4"
-                        />
-                        <div className="w-full">
-                            <div className="flex flex-row items-start justify-between">
-                                <div>
-                                    <div className="text-gray-500">{member.name}</div>
-                                    <div className="text-gray-500 truncate">{member.email}</div>
-                                </div>
-                                <StatusRadioGroup
-                                    name={`status-${index}`}
-                                    checkedValue={member.status}
-                                    onChange={(value) => handleStatusChange(index, value)}
-                                />
-                            </div>
-                            {/*<Input*/}
-                            {/*    placeholder="Reason"*/}
-                            {/*    value={member.reason}*/}
-                            {/*    onChange={(val) => handleReasonChange(index, val)}*/}
-                            {/*/>*/}
-                        </div>
-                    </div>
-                </div>
+                <CGMemberCard
+                    key={member.user_id}
+                    member={member}
+                    index={index}
+                    handleStatusChange={handleStatusChange}
+                />
             ))}
 
-            {/*<div className="flex justify-center items-center mt-4">*/}
-            {/*    <button*/}
-            {/*        className="bg-blue-500 text-white px-4 py-2 rounded"*/}
-            {/*        onClick={handleSubmit}*/}
-            {/*    >*/}
-            {/*        Submit*/}
-            {/*    </button>*/}
-            {/*</div>*/}
+            <div className={"h-12"}></div>
+
 
             <div className="fixed bottom-0 left-0 w-full py-4 flex justify-center text-lg ">
                 <button className="w-[calc(100%-20px)] max-w-[600px] bg-[#191D1A] text-white py-2 rounded-full"
