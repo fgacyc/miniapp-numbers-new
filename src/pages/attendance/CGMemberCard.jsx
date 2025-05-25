@@ -67,7 +67,7 @@ function CGMemberCard({ member, index, handleStatusChange }) {
                     <div className="flex flex-row items-start justify-between">
                         <div>
                             <div className="text-gray-500">{member.name}</div>
-                            <div className="text-gray-500 truncate">{member.email}</div>
+                            {/*<div className="text-gray-500 truncate">{member.email}</div>*/}
                         </div>
                         <StatusRadioGroup
                             name={`status-${index}`}
