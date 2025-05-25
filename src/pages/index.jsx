@@ -35,7 +35,7 @@ export default function Index() {
     useEffect(() => {
         if (isLoading) return;
         if (isError) return;
-        console.log(data)
+        // console.log(data)
         if (data.status) {
             setEventList(data.data);
         } else {

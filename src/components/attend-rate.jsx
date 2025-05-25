@@ -17,7 +17,9 @@ export default function AttendRate({connect_group_id}) {
         if (isError)  return;
         console.log(data)
         if (data.status) {
-            setAttendanceRate(data.data.attendance_rate);
+            const  rateStr = data.data.attendance_rate
+            const rateFloat = parseFloat(rateStr)  * 100
+            setAttendanceRate(rateFloat.toFixed(2) );
         } else {
             console.log("Error fetching event types");
         }
@@ -34,7 +36,7 @@ export default function AttendRate({connect_group_id}) {
             <div>Recent 4 weeks attend rate</div>
 
             <SemiCircleProgressBar
-                percentage={attendanceRate*100}
+                percentage={attendanceRate}
                 showPercentValue
                 stroke={"#191D1A"}
                 strokeWidth={15}

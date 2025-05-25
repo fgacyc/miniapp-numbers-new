@@ -2,7 +2,7 @@ import EventCard from "@/components/event-card.jsx";
 import {useState} from "react";
 
 export default function EventSection({eventList,setCurrentEvent,setActionSheetVisible}){
-    console.log("eventList",eventList)
+    // console.log("eventList",eventList)
 
     const eventStatus = [
         "All",
