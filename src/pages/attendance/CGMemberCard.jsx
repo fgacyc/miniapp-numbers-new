@@ -147,7 +147,7 @@ export default function CGMemberCard({ connect_group_id, session_id }) {
     }
 
     return (
-        <div >
+        <div>
             <div className={"flex flex-row items-center justify-between w-full mb-3"}>
                 <div className={"bg-white shadow rounded p-3 w-1/2 mr-2"}>
                     <div className={"text-gray-400"}>No. of Members</div>
@@ -202,12 +202,20 @@ export default function CGMemberCard({ connect_group_id, session_id }) {
                 </div>
             ))}
 
-            <div className="flex justify-center items-center mt-4">
-                <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                    onClick={handleSubmit}
+            {/*<div className="flex justify-center items-center mt-4">*/}
+            {/*    <button*/}
+            {/*        className="bg-blue-500 text-white px-4 py-2 rounded"*/}
+            {/*        onClick={handleSubmit}*/}
+            {/*    >*/}
+            {/*        Submit*/}
+            {/*    </button>*/}
+            {/*</div>*/}
+
+            <div className="fixed bottom-0 left-0 w-full py-4 flex justify-center text-lg ">
+                <button className="w-[calc(100%-20px)] max-w-[600px] bg-[#191D1A] text-white py-2 rounded-full"
+                        onClick={handleSubmit}
                 >
-                    Submit
+                    Save
                 </button>
             </div>
         </div>

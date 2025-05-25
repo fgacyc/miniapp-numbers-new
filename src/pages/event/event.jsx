@@ -127,10 +127,10 @@ export default function Event() {
                 >
                     {!isLoading && !isError && EventTypes &&
                         EventTypes.map((option, index) => (
-                        <Option key={index} value={option.name}>
-                            {option.name}
-                        </Option>
-                    ))}
+                            <Option key={index} value={option.name}>
+                                {option.name}
+                            </Option>
+                        ))}
                 </Select>
             </Block>
 
@@ -166,18 +166,20 @@ export default function Event() {
                 />
             </Block>
 
-            <div className={"flex justify-center items-center mt-4"}>
-                <button className={"bg-blue-500 text-white px-4 py-2 rounded"} onClick={handleSubmit}>
-                    Submit
-                </button>
+            {
+                isEditMode && (
+                    <div className={"text-red-500 py-2 ml-4"} onClick={handleDelete}>
+                        Remove Event
+                    </div>
+                )
+            }
 
-                {
-                    isEditMode && (
-                        <button className={"bg-red-500 text-white px-4 py-2 rounded ml-2"} onClick={handleDelete}>
-                            Delete
-                        </button>
-                    )
-                }
+            <div className="fixed bottom-0 left-0 w-full py-4 flex justify-center text-lg ">
+                <button className="w-[calc(100%-20px)] max-w-[600px] bg-[#191D1A] text-white py-2 rounded-full"
+                        onClick={handleSubmit}
+                >
+                    Save
+                </button>
             </div>
         </div>
     );
