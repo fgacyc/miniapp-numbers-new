@@ -22,7 +22,7 @@ export default function Index() {
 
     // get whole url
     const url = new URL(window.location.href);
-    alert(url.href);
+    alert(url.href + "\n\n" + CGID + "\n\n" );
 
 
     // const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
