@@ -20,11 +20,6 @@ export default function Index() {
     // const {t} =  useTranslation();
     const {CGID} = useParams();
 
-    // get whole url
-    const url = new URL(window.location.href);
-    alert(url.href + "\n\n" + CGID + "\n\n" );
-
-
     // const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
     // CGID is the connect group ID from the URL parameters
     // https://miniapp-numbers-new.pages.dev/GUeEXeUO0Evpi5NhkOf3
