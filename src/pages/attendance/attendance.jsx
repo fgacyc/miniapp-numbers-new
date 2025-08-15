@@ -6,8 +6,8 @@ import CGMemberSection from "@/pages/attendance/CGMemberCard.jsx";
 
 export default function Attendance() {
     const navigate = useNavigate();
-    const {eventID,session_id} = useParams();
-    const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
+    const {eventID,session_id,connect_group_id} = useParams();
+    // const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
 
     return (
         <div className={"h-screen overflow-y-auto"}>

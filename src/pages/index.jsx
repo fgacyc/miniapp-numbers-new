@@ -49,7 +49,7 @@ export default function Index() {
             text: 'Submit Number',
             key: 'submit',
             onClick: () => {
-                navigate(`/attendance/${currentEvent.event.id}/${currentEvent.session.id}`)
+                navigate(`/attendance/${currentEvent.event.id}/${currentEvent.session.id}/${connect_group_id}`)
             }
         },
         {
