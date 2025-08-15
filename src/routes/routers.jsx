@@ -24,7 +24,7 @@ export default function MainRoutes(){
             {/* add attendance */}
             <Route path="/attendance" element={<Attendance />} />
             {/* edit attendance */}
-            <Route path="/attendance/:eventID/:session_id" element={<Attendance />} />
+            <Route path="/attendance/:eventID/:session_id/:connect_group_id" element={<Attendance />} />
         </Routes>
     )
 }
