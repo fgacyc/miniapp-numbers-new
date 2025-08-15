@@ -10,7 +10,7 @@ import Attendance from "@/pages/attendance/attendance.jsx";
 export default function MainRoutes(){
     return (
         <Routes>
-            <Route path="/:UID" element={<Index />} />
+            <Route path="/:CGID" element={<Index />} />
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/settings" element={<Settings />} />

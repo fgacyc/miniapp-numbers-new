@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import ProfileToken from "@/components/profile-token.jsx";
 // import {useUserStore} from "@/store/user-store.js";
 // import {useTranslation} from "react-i18next";
@@ -7,13 +7,10 @@ import ProfileToken from "@/components/profile-token.jsx";
 // import {DatePicker} from "@arco-design/web-react";
 import {ActionSheet, Button} from "antd-mobile";
 import {useQuery} from "@tanstack/react-query";
-// import {getAllEventTypes} from "@/api/event_type.js";
 import {getAllEventsWithSessionsWithCGID} from "@/api/event.js";
-import {IconRight} from "@arco-design/web-react/icon";
 import CgCard from "@/components/cg-card.jsx";
 import AttendRate from "@/components/attend-rate.jsx";
-import AttendBarChart from "@/components/attend-bar-chart.jsx";
-import EventCard from "@/components/event-card.jsx";
+
 import EventSection from "@/components/event-section.jsx";
 
 
@@ -21,9 +18,13 @@ export default function Index() {
     const navigate = useNavigate();
     // const [UID,language] = useUserStore(state => [state.UID,state.language]);
     // const {t} =  useTranslation();
+    const {CGID} = useParams();
 
 
-    const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
+    // const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
+    // CGID is the connect group ID from the URL parameters
+    // https://miniapp-numbers-new.pages.dev/GUeEXeUO0Evpi5NhkOf3
+    const connect_group_id = CGID;
 
 
     const {data, isLoading, isError} = useQuery({
