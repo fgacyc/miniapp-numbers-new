@@ -8,6 +8,9 @@ NavBar.propTypes = {
     url : PropTypes.string
 };
 
+const isExternal = (u) => /^([a-z][a-z0-9+.-]*:|\/\/)/i.test(u);
+
+
 export default function NavBar({ children, ifShowBackArrow = true,url="" }) {
     const navigate = useNavigate();
 
@@ -15,7 +18,14 @@ export default function NavBar({ children, ifShowBackArrow = true,url="" }) {
         <>
             <div className={"h-[45px] px-3 flex items-center justify-between bg-white"}>
 
-                <div onClick={() => url? navigate(url):navigate(-1) } className={"cursor-pointer"}>
+                <div onClick={() => {
+                    if (!url) return navigate(-1);
+                    if (isExternal(url)) {
+                        window.location.assign(url); // 外链：用浏览器跳转
+                    } else {
+                        navigate(url);               // 站内：用 react-router
+                    }
+                }} className={"cursor-pointer"}>
                     {ifShowBackArrow && <BsChevronLeft className={"h-6 w-6"}/>}
                 </div>
                 <div className={"text-lg"}>{children}</div>

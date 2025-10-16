@@ -12,6 +12,7 @@ import CgCard from "@/components/cg-card.jsx";
 import AttendRate from "@/components/attend-rate.jsx";
 
 import EventSection from "@/components/event-section.jsx";
+import NavBar from "@/components/nav-bar.jsx";
 
 
 export default function Index() {
@@ -66,7 +67,10 @@ export default function Index() {
 
 
     return (
-        <div className={"h-screen flex flex-col justify-center items-center"}>
+        <div className={"h-screen overflow-y-auto"}>
+            <NavBar ifShowBackArrow={true}
+                url={"https://link.fgacyc.com"}
+            ></NavBar>
             {/*<ProfileToken/>*/}
             <div className={"h-screen w-full flex flex-col justify-start items-center p-4 overflow-y-auto pt-12"}>
                 <CgCard connect_group_id={connect_group_id}/>
