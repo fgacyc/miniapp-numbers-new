@@ -26,18 +26,16 @@ export default function Index() {
     // CGID is the connect group ID from the URL parameters
     // https://miniapp-numbers-new.pages.dev/GUeEXeUO0Evpi5NhkOf3
 
-    const connect_group_id = useParams().CGID ;
+    let connect_group_id = useParams().CGID ;
     let token = searchParams.get('token');
     const language = searchParams.get('language') || 'en';
 
-    // store token in local storage
-    if (token) {
-        localStorage.setItem('token', token);
-    }
-    // if no token in URL, get token from local storage
-    if (!token) {
-        token = localStorage.getItem('token');
-    }
+    // store token and connect_group_id in local storage
+    if (token) localStorage.setItem('token', token);
+    if (connect_group_id)  localStorage.setItem('connect_group_id', connect_group_id);
+    // if not in the url, get it from local storage
+    token = localStorage.getItem('token');
+    connect_group_id = localStorage.getItem('connect_group_id');
 
 
 
