@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import ProfileToken from "@/components/profile-token.jsx";
 // import {useUserStore} from "@/store/user-store.js";
 // import {useTranslation} from "react-i18next";
@@ -17,6 +17,7 @@ import NavBar from "@/components/nav-bar.jsx";
 
 export default function Index() {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     // const [UID,language] = useUserStore(state => [state.UID,state.language]);
     // const {t} =  useTranslation();
     // const {CGID} = useParams();
@@ -26,8 +27,8 @@ export default function Index() {
     // https://miniapp-numbers-new.pages.dev/GUeEXeUO0Evpi5NhkOf3
 
     const connect_group_id = useParams().CGID ;
-    let token = useParams().token ;
-    const language = useParams().language || 'en';
+    let token = searchParams.get('token');
+    const language = searchParams.get('language') || 'en';
 
     // store token in local storage
     if (token) {
