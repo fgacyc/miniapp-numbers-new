@@ -19,13 +19,25 @@ export default function Index() {
     const navigate = useNavigate();
     // const [UID,language] = useUserStore(state => [state.UID,state.language]);
     // const {t} =  useTranslation();
-    const {CGID} = useParams();
+    // const {CGID} = useParams();
 
-    const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
+    // const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
     // CGID is the connect group ID from the URL parameters
     // https://miniapp-numbers-new.pages.dev/GUeEXeUO0Evpi5NhkOf3
 
-    //const connect_group_id = useParams().CGID ;
+    const connect_group_id = useParams().CGID ;
+    let token = useParams().token ;
+    const language = useParams().language || 'en';
+
+    // store token in local storage
+    if (token) {
+        localStorage.setItem('token', token);
+    }
+    // if no token in URL, get token from local storage
+    if (!token) {
+        token = localStorage.getItem('token');
+    }
+
 
 
     const {data, isLoading, isError} = useQuery({
@@ -67,9 +79,9 @@ export default function Index() {
 
 
     return (
-        <div className={"h-screen overflow-y-auto"}>
+        <div className={"h-screen overflow-y-hidden"}>
             <NavBar ifShowBackArrow={true}
-                url={"https://link.fgacyc.com"}
+                url={`https://link.fgacyc.com/?token=${token}&language=${language}`}
             ></NavBar>
             {/*<ProfileToken/>*/}
             <div className={"h-screen w-full flex flex-col justify-start items-center p-4 overflow-y-auto pt-12"}>
