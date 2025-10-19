@@ -45,7 +45,7 @@ export default function EventRecurringSwitch({ event_id,isRecurring, setIsRecurr
 
 
     return(
-       <div className={`mb-2 ${isEditMode ? 'hidden' : ''}`}>
+       <div className={`my-3 ${isEditMode ? 'hidden' : ''}`}>
            <Space className={"ml-3"}>
                <Switch size='small'
                        checked={isRecurring}
