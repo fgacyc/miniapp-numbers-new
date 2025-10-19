@@ -94,6 +94,14 @@ export default function Event() {
             ? await updateEventWithSession(event_id, eventData)
             : await createEventWithSession(eventData);
 
+        // 如果是创建，且不重复，直接pass
+
+        // 如果是创建，且重复，调用后台接口创建重复事件
+
+        // 如果是编辑，但是无重复模板，直接pass
+
+        // 如果是编辑，且有重复模板，调用后台接口更新重复事件
+
         if (res.status) {
             Toast.show({
                 content: isEditMode ? 'Event updated successfully' : 'Event created successfully',
