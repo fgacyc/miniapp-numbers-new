@@ -35,6 +35,7 @@ export default function Event() {
     const [remark, setRemark] = useState("");
     const [isRecurring, setIsRecurring] = useState(false);
     const [recurringInterval, setRecurringInterval] = useState(7);
+    const [hasRecurringTemplate, setHasRecurringTemplate] = useState(false);
 
 
 
@@ -97,10 +98,16 @@ export default function Event() {
         // 如果是创建，且不重复，直接pass
 
         // 如果是创建，且重复，调用后台接口创建重复事件
+        if (isRecurring && !isEditMode) {
+            console.log("Create recurring events");
+        }
 
         // 如果是编辑，但是无重复模板，直接pass
 
         // 如果是编辑，且有重复模板，调用后台接口更新重复事件
+        if (isEditMode && hasRecurringTemplate) {
+            console.log("Update recurring events");
+        }
 
         if (res.status) {
             Toast.show({
@@ -172,11 +179,14 @@ export default function Event() {
             </Block>
 
 
-           <EventRecurringSwitch isRecurring={isRecurring}
+           <EventRecurringSwitch
+               event_id={event_id}
+               isRecurring={isRecurring}
                                  setIsRecurring={setIsRecurring}
                                  recurringInterval={recurringInterval}
                                  setRecurringInterval={setRecurringInterval}
                                  isEditMode ={isEditMode}
+                                 setHasRecurringTemplate={setHasRecurringTemplate}
            />
 
 
