@@ -86,3 +86,60 @@ export async function deleteEventWithSession(eventId) {
 
     return response.json();
 }
+
+
+// 添加重复任务
+export async function createRecurringEvents(event_id, data) {
+    const response = await fetch(`${host_url}/event/recurring/${event_id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to create recurring events");
+    }
+
+    return response.json();
+}
+
+// 根据event_id 查询重复任务
+export async function getRecurringEventsByEventId(event_id) {
+    const response = await fetch(`${host_url}/event/recurring/by_event/${event_id}`, {
+        method: "GET",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch recurring events by event ID: ${event_id}`);
+    }
+
+    return response.json();
+}
+
+// 停止重复任务
+export async function stopRecurringEvents(template_id) {
+    const response = await fetch(`${host_url}/event/recurring/stop/${template_id}`, {
+        method: "DELETE",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to stop recurring events: ${template_id}`);
+    }
+
+    return response.json();
+}
+
+// 重启重复任务
+export async function resumeRecurringEvents(template_id) {
+    const response = await fetch(`${host_url}/event/recurring/resume/${template_id}`, {
+        method: "POST",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to restart recurring events: ${template_id}`);
+    }
+
+    return response.json();
+}

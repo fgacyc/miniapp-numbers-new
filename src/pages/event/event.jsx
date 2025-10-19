@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "@/components/nav-bar.jsx";
 import Block from "@/components/block.jsx";
 import { useEffect, useState } from "react";
-import { DatePicker, Select, TimePicker, Input } from "@arco-design/web-react";
+import { DatePicker, Select, TimePicker, Input,Space ,Switch} from "@arco-design/web-react";
 import { getAllEventTypes } from "@/api/event_type.js";
 import {
     getEventWithSession,
@@ -11,7 +11,8 @@ import {
 } from "@/api/event.js";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { Toast } from "antd-mobile";
+import { Toast} from "antd-mobile";
+import EventRecurringSwitch from "@/components/event-recurring-switch.jsx";
 
 const TextArea = Input.TextArea;
 const Option = Select.Option;
@@ -32,6 +33,10 @@ export default function Event() {
     const [startTime, setStartTime] = useState(dayjs(new Date()).format("HH:mm:ss"));
     const [endTime, setEndTime] = useState(dayjs(new Date()).format("HH:mm:ss"));
     const [remark, setRemark] = useState("");
+    const [isRecurring, setIsRecurring] = useState(false);
+    const [recurringInterval, setRecurringInterval] = useState(7);
+
+
 
     // Load event types
     useEffect(() => {
@@ -88,6 +93,23 @@ export default function Event() {
         const res = isEditMode
             ? await updateEventWithSession(event_id, eventData)
             : await createEventWithSession(eventData);
+
+        // 1.创建模式 + 不重复 -- 仅创建event
+        // 2.创建模式 + 重复 -- 创建event + 创建重复
+        // 3.编辑模式 + 不改变重复状态 -- 仅更新event
+        // 4.编辑模式 + 改变为重复 -- 更新event + 创建重复
+        // 5.编辑模式 + 改变为不重复 -- 更新event + 停止重复
+
+        // 1.创建模式 + 不重复
+        if (!isEditMode && !isRecurring ){
+            console.log("Create single event");
+        }
+
+        // 2.创建模式 + 重复
+        if (!isEditMode && isRecurring ){
+            console.log("Create recurring events");
+
+        }
 
         if (res.status) {
             Toast.show({
@@ -157,6 +179,14 @@ export default function Event() {
                     onSelect={(value) => setEndTime(value)}
                 />
             </Block>
+
+
+           <EventRecurringSwitch isRecurring={isRecurring}
+                                 setIsRecurring={setIsRecurring}
+                                 recurringInterval={recurringInterval}
+                                 setRecurringInterval={setRecurringInterval}
+           />
+
 
             <Block title={"Remark"} className={"mb-2"}>
                 <TextArea

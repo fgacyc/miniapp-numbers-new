@@ -22,11 +22,11 @@ export default function Index() {
     // const {t} =  useTranslation();
     // const {CGID} = useParams();
 
-    // const connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
+    let connect_group_id = "GUeEXeUO0Evpi5NhkOf3"
     // CGID is the connect group ID from the URL parameters
     // https://miniapp-numbers-new.pages.dev/GUeEXeUO0Evpi5NhkOf3
 
-    let connect_group_id = useParams().CGID ;
+    // let connect_group_id = useParams().CGID ;
     let token = searchParams.get('token');
     const language = searchParams.get('language') || 'en';
 
