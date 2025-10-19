@@ -94,23 +94,6 @@ export default function Event() {
             ? await updateEventWithSession(event_id, eventData)
             : await createEventWithSession(eventData);
 
-        // 1.创建模式 + 不重复 -- 仅创建event
-        // 2.创建模式 + 重复 -- 创建event + 创建重复
-        // 3.编辑模式 + 不改变重复状态 -- 仅更新event
-        // 4.编辑模式 + 改变为重复 -- 更新event + 创建重复
-        // 5.编辑模式 + 改变为不重复 -- 更新event + 停止重复
-
-        // 1.创建模式 + 不重复
-        if (!isEditMode && !isRecurring ){
-            console.log("Create single event");
-        }
-
-        // 2.创建模式 + 重复
-        if (!isEditMode && isRecurring ){
-            console.log("Create recurring events");
-
-        }
-
         if (res.status) {
             Toast.show({
                 content: isEditMode ? 'Event updated successfully' : 'Event created successfully',
@@ -185,6 +168,7 @@ export default function Event() {
                                  setIsRecurring={setIsRecurring}
                                  recurringInterval={recurringInterval}
                                  setRecurringInterval={setRecurringInterval}
+                                 isEditMode ={isEditMode}
            />
 
 
