@@ -12,7 +12,7 @@ export default function EventRecurringSwitch({event_id,
                                                  recurringInterval,   // 7 | 14 | 21 | 28
                                                  setTemplateId,       // 用于保存/更新后端的 Recurring Template Id 或 Interval（与你现有签名保持一致）
                                                  isEditMode,
-                                                 // setHasRecurringTemplate, // 外部需要知道是否存在模板时可用（可选）
+                                                 setRecurringInterval, // 用于更新选择的重复间隔
                                              }) {
     const [hasTemplate, setHasTemplate] = useState(false);
 
@@ -90,7 +90,7 @@ export default function EventRecurringSwitch({event_id,
                 <Select
                     placeholder="Select recurrence interval"
                     value={recurringInterval}
-                    onChange={setTemplateId}  // 与你现有 props 名保持一致（如果你实际想更新 interval，可把回调换成 setRecurringInterval）
+                    onChange={setRecurringInterval}  // 与你现有 props 名保持一致（如果你实际想更新 interval，可把回调换成 setRecurringInterval）
                 >
                     {recurringOptions.map((option) => (
                         <Option key={option.value} value={option.value}>
