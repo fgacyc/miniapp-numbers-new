@@ -121,7 +121,7 @@ export async function getRecurringEventsByEventId(event_id) {
 // 停止重复任务
 export async function stopRecurringEvents(template_id) {
     const response = await fetch(`${host_url}/event/recurring/stop/${template_id}`, {
-        method: "DELETE",
+        method: "PUT",
     });
 
     if (!response.ok) {
@@ -134,7 +134,7 @@ export async function stopRecurringEvents(template_id) {
 // 重启重复任务
 export async function resumeRecurringEvents(template_id) {
     const response = await fetch(`${host_url}/event/recurring/resume/${template_id}`, {
-        method: "POST",
+        method: "PUT",
     });
 
     if (!response.ok) {

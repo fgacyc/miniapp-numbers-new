@@ -7,7 +7,7 @@ import { getAllEventTypes } from "@/api/event_type.js";
 import {
     getEventWithSession,
     createEventWithSession,
-    updateEventWithSession, deleteEventWithSession
+    updateEventWithSession, deleteEventWithSession, createRecurringEvents, stopRecurringEvents, resumeRecurringEvents
 } from "@/api/event.js";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -35,7 +35,7 @@ export default function Event() {
     const [remark, setRemark] = useState("");
     const [isRecurring, setIsRecurring] = useState(false);
     const [recurringInterval, setRecurringInterval] = useState(7);
-    const [hasRecurringTemplate, setHasRecurringTemplate] = useState(false);
+    const [template_id, setTemplateId] = useState(null);
 
 
 
@@ -98,15 +98,32 @@ export default function Event() {
         // 如果是创建，且不重复，直接pass
 
         // 如果是创建，且重复，调用后台接口创建重复事件
-        if (isRecurring && !isEditMode) {
+        if (!isEditMode && isRecurring) {
+            if (res.status){
+                const newEventId = res.data.event.id;
+
+                // add interval_days to res.data
+                const resRecurring = res.data.event
+                resRecurring.interval_days = recurringInterval
+                resRecurring.start_at = res.data.session.startAt
+                resRecurring.end_at = res.data.session.endAt
+                resRecurring.connect_group_id = connect_group_id
+
+                // 调用创建重复事件的接口
+                await createRecurringEvents(newEventId,resRecurring);
+            }
             console.log("Create recurring events");
         }
 
         // 如果是编辑，但是无重复模板，直接pass
 
         // 如果是编辑，且有重复模板，调用后台接口更新重复事件
-        if (isEditMode && hasRecurringTemplate) {
-            console.log("Update recurring events");
+        if (isEditMode && template_id) {
+            if(isRecurring) {
+                await resumeRecurringEvents(template_id); //
+            }else{
+                await stopRecurringEvents(template_id);
+            }
         }
 
         if (res.status) {
@@ -186,7 +203,7 @@ export default function Event() {
                                  recurringInterval={recurringInterval}
                                  setRecurringInterval={setRecurringInterval}
                                  isEditMode ={isEditMode}
-                                 setHasRecurringTemplate={setHasRecurringTemplate}
+               setTemplateId={setTemplateId}
            />
 
 

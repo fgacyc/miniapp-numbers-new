@@ -1,74 +1,104 @@
-import {Select, Space, Switch} from "@arco-design/web-react";
+import { Select, Space, Switch } from "@arco-design/web-react";
 import Block from "@/components/block.jsx";
-import {useQuery} from "@tanstack/react-query";
-import {getAllEventsWithSessionsWithCGID, getRecurringEventsByEventId} from "@/api/event.js";
-import {useEffect} from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getRecurringEventsByEventId } from "@/api/event.js";
+import { useEffect, useState } from "react";
+
 const Option = Select.Option;
 
-export default function EventRecurringSwitch({ event_id,isRecurring, setIsRecurring , recurringInterval, setRecurringInterval,isEditMode,setHasRecurringTemplate}) {
+export default function EventRecurringSwitch({event_id,
+                                                 isRecurring,
+                                                 setIsRecurring,
+                                                 recurringInterval,   // 7 | 14 | 21 | 28
+                                                 setTemplateId,       // 用于保存/更新后端的 Recurring Template Id 或 Interval（与你现有签名保持一致）
+                                                 isEditMode,
+                                                 // setHasRecurringTemplate, // 外部需要知道是否存在模板时可用（可选）
+                                             }) {
+    const [hasTemplate, setHasTemplate] = useState(false);
+
     const recurringOptions = [
-        { label: '1 Week', value: 7 },
-        { label: '2 Weeks', value: 14 },
-        { label: '3 Weeks', value: 21 },
-        { label: '4 Weeks', value: 28 }
-    ]
-    /// 只允许创建的时候设置重复事件
-    /// 如果创建的时候设置了重复事件，接下来在编辑的时候就可以看到重复事件的信息，可以进行修改
-    /// 所以在编辑模式下，只有event_recurring 里面有记录才允许修改
-    /// 没有记录的话，也就是没有设置重复事件，就不显示重复事件的修改
+        { label: "1 Week", value: 7 },
+        { label: "2 Weeks", value: 14 },
+        { label: "3 Weeks", value: 21 },
+        { label: "4 Weeks", value: 28 },
+    ];
 
+    // 仅编辑模式 + 有 event_id 时请求
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["recurringEventsByEventId", event_id],
+        queryFn: () => getRecurringEventsByEventId(event_id),
+        enabled: Boolean(isEditMode && event_id),
+    });
 
-    // 如果在编辑模式下
-    //  查询当前任务是否有重复事件模板，有的话就显示重复编辑组件，否则就隐藏
+    useEffect(() => {
+        if (!isEditMode) {
+            // 创建模式不需要查询结果来决定显示，直接显示
+            setHasTemplate(false);
+            return;
+        }
+        if (isLoading || isError) return;
 
-    // if(isEditMode){
-    //     const {data, isLoading, isError} = useQuery({
-    //         queryKey: ["/getAllEventsWithSessionsWithCGID"],
-    //         queryFn: () => getRecurringEventsByEventId(event_id)
-    //     });
-    //
-    //     useEffect(() => {
-    //         if (isLoading) return;
-    //         if (isError) return;
-    //         // console.log(data)
-    //         if (data.status) {
-    //             if (data.data && data.data.length > 0) {
-    //                 setHasRecurringTemplate(true);
-    //             } else {
-    //                 setHasRecurringTemplate(false);
-    //             }
-    //         } else {
-    //             console.log("Error fetching event types");
-    //         }
-    //     }, [data]);
-    // }
+        const ok = data?.status === true;
+        const list = Array.isArray(data?.data) ? data.data : [];
+        const first = list[0];
 
+        const found = ok && first && (first.id || first.template_id || first.templateId);
+        setHasTemplate(Boolean(found));
+        // setHasRecurringTemplate?.(Boolean(found));
 
-    return(
-       <div className={`my-3 ${isEditMode ? 'hidden' : ''}`}>
-           <Space className={"ml-3"}>
-               <Switch size='small'
-                       checked={isRecurring}
-                       onChange={setIsRecurring}
-               />
-               <span className={"text-[#9ca3af]"}>Make Recurring</span>
-           </Space>
+        // 如果后端返回了模板的 id 或者 interval，这里按你的后端字段回填
+        if (found) {
+            // 优先尝试常见字段名，防止后端命名差异
+            const tplId = first.template_id ?? first.templateId ?? first.id;
+            if (tplId) setTemplateId(tplId);
+            // 若后端也返回了 interval，可在此根据 first.interval 去同步 UI
+            // 例如：setTemplateId(first.interval) —— 取决于你的后端定义
+        }
+    }, [isEditMode, isLoading, isError, data, setTemplateId]);
 
-           <Block title={"Event Recurring"} className={`mb-2 ${isRecurring ? '' : 'hidden'}`}>
-               <Select
-                   placeholder='Please select event type'
-                   value={recurringInterval}
-                   onChange={setRecurringInterval}
-               >
-                   {recurringOptions.map((option, index) => (
-                       <Option key={index} value={option.value}>
-                           {option.label}
-                       </Option>
-                   ))}
-               </Select>
-           </Block>
-       </div>
+    // 显隐规则：创建模式总是显示；编辑模式仅当查询到模板时显示
+    const shouldShow = !isEditMode || (isEditMode && hasTemplate);
 
+    return (
+        <div className={`my-3 ${shouldShow ? "" : "hidden"}`}>
+            {/* 创建模式：允许选择是否“设为重复” */}
+            {!isEditMode && (
+                <Space className="ml-3">
+                    <Switch
+                        size="small"
+                        checked={isRecurring}
+                        onChange={setIsRecurring}
+                    />
+                    <span className="text-[#9ca3af]">Make Recurring</span>
+                </Space>
+            )}
 
-)
+            {/* 块显隐：
+          - 创建模式：isRecurring=true 时显示选择频率
+          - 编辑模式：hasTemplate=true 时显示（可用于查看/修改频率或模板）
+      */}
+            <Block
+                title={"Event Recurring"}
+                className={`mb-2 ${
+                    isEditMode
+                        ? ""              // 编辑模式下只要有模板（外层已控制 shouldShow），就显示
+                        : isRecurring
+                            ? ""
+                            : "hidden"
+                }`}
+            >
+                <Select
+                    placeholder="Select recurrence interval"
+                    value={recurringInterval}
+                    onChange={setTemplateId}  // 与你现有 props 名保持一致（如果你实际想更新 interval，可把回调换成 setRecurringInterval）
+                >
+                    {recurringOptions.map((option) => (
+                        <Option key={option.value} value={option.value}>
+                            {option.label}
+                        </Option>
+                    ))}
+                </Select>
+            </Block>
+        </div>
+    );
 }
